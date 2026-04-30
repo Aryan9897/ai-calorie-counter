@@ -4,6 +4,9 @@ node_modules/
 # pnpm
 .pnpm-store/
 
+# npm lockfile (this is a pnpm project)
+package-lock.json
+
 # Expo
 .expo/
 dist/
@@ -32,6 +35,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # TypeScript
