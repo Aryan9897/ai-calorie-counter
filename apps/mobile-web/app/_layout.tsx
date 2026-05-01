@@ -14,9 +14,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="signup" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="(protected)" options={{ animation: 'fade' }} />
       </Stack>
     </ThemeProvider>
   );

@@ -8,7 +8,6 @@ export default function DashboardRoute() {
   return (
     <Dashboard
       onProfile={() => router.push('/profile')}
-      onAddFood={() => router.push('/add-food')}
     />
   );
 }

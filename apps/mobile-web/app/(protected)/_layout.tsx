@@ -1,4 +1,4 @@
-import { Slot, Redirect } from 'expo-router';
+import { Stack, Redirect } from 'expo-router';
 
 // TODO: replace with real auth state from Supabase once auth is wired up
 const useIsAuthenticated = () => true;
@@ -8,5 +8,10 @@ export default function ProtectedLayout() {
 
   if (!isAuthenticated) return <Redirect href="/" />;
 
-  return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="dashboard" />
+      <Stack.Screen name="profile" options={{ animation: 'slide_from_right' }} />
+    </Stack>
+  );
 }

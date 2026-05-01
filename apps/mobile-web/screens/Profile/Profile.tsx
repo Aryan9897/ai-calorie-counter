@@ -18,28 +18,18 @@ const ACTIVITY_LEVELS = [
   'Extra Active',
 ];
 
-// Placeholder profile — will come from Supabase + Zustand
-const DEFAULT_PROFILE = {
-  name: 'Your Name',
-  age: '25',
-  calorieGoal: '2000',
-  activityLevel: 'Moderately Active',
-  height: "5'10\"",
-  weight: '165 lbs',
-};
-
 interface Props {
   onBack: () => void;
   onLogout: () => void;
 }
 
 export default function Profile({ onBack, onLogout }: Props) {
-  const [name, setName] = useState(DEFAULT_PROFILE.name);
-  const [age, setAge] = useState(DEFAULT_PROFILE.age);
-  const [calorieGoal, setCalorieGoal] = useState(DEFAULT_PROFILE.calorieGoal);
-  const [activityLevel, setActivityLevel] = useState(DEFAULT_PROFILE.activityLevel);
-  const [height, setHeight] = useState(DEFAULT_PROFILE.height);
-  const [weight, setWeight] = useState(DEFAULT_PROFILE.weight);
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [calorieGoal, setCalorieGoal] = useState('');
+  const [activityLevel, setActivityLevel] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
   const [activityOpen, setActivityOpen] = useState(false);
   const [nameFocused, setNameFocused] = useState(false);
   const [ageFocused, setAgeFocused] = useState(false);
