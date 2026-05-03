@@ -15,31 +15,35 @@ import { styles } from './AddFood.styles';
 const FOOD_ICONS = ['🍎', '🥗', '🍕', '🍔', '🥤', '🍞', '🍳', '🥑', '🍌', '🥛', '☕', '🍽️'];
 const ICON_ROWS = [FOOD_ICONS.slice(0, 6), FOOD_ICONS.slice(6)];
 
-interface Props {
-  onBack: () => void;
-  onAddFood: (food: {
-    name: string;
-    caloriesPerServing: number;
-    servings: number;
-    icon: string;
-  }) => void;
+interface FoodData {
+  name: string;
+  caloriesPerServing: number;
+  servings: number;
+  icon: string;
 }
 
-export default function AddFood({ onBack, onAddFood }: Props) {
-  const [name, setName] = useState('');
-  const [calories, setCalories] = useState('');
-  const [servings, setServings] = useState('1');
-  const [selectedIcon, setSelectedIcon] = useState('🍽️');
+interface Props {
+  initialFood?: FoodData;
+  onBack: () => void;
+  onSubmit: (food: FoodData) => void;
+}
 
-  const handleAdd = () => {
+export default function AddFood({ initialFood, onBack, onSubmit }: Props) {
+  const isEditing = !!initialFood;
+
+  const [name, setName] = useState(initialFood?.name ?? '');
+  const [calories, setCalories] = useState(initialFood?.caloriesPerServing.toString() ?? '');
+  const [servings, setServings] = useState(initialFood?.servings.toString() ?? '1');
+  const [selectedIcon, setSelectedIcon] = useState(initialFood?.icon ?? '🍽️');
+
+  const handleSubmit = () => {
     if (!name.trim() || !calories) return;
-    onAddFood({
+    onSubmit({
       name: name.trim(),
       caloriesPerServing: parseInt(calories, 10),
       servings: parseFloat(servings) || 1,
       icon: selectedIcon,
     });
-    onBack();
   };
 
   return (
@@ -55,7 +59,7 @@ export default function AddFood({ onBack, onAddFood }: Props) {
         >
           <Ionicons name="arrow-back" size={24} color="#111827" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add Food</Text>
+        <Text style={styles.headerTitle}>{isEditing ? 'Edit Food' : 'Add Food'}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -123,9 +127,9 @@ export default function AddFood({ onBack, onAddFood }: Props) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.addButton} onPress={handleAdd} activeOpacity={0.85}>
-          <Ionicons name="add" size={20} color="#fff" />
-          <Text style={styles.addButtonText}>Add Food</Text>
+        <TouchableOpacity style={styles.addButton} onPress={handleSubmit} activeOpacity={0.85}>
+          <Ionicons name={isEditing ? 'checkmark' : 'add'} size={20} color="#fff" />
+          <Text style={styles.addButtonText}>{isEditing ? 'Update Food' : 'Add Food'}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

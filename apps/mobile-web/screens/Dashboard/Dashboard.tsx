@@ -3,10 +3,18 @@ import { View, Text, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import CircularCalorieTracker from '@/components/CircularCalorieTracker/CircularCalorieTracker';
-import FoodListItem from '@/components/FoodListItem/FoodListItem';
+import SwipeableFoodItem from '@/components/SwipeableFoodItem/SwipeableFoodItem';
 import AddFood from '@/screens/AddFood/AddFood';
 import DatePicker from '@/screens/DatePicker/DatePicker';
 import { styles } from './Dashboard.styles';
+
+interface FoodItem {
+  id: string;
+  name: string;
+  caloriesPerServing: number;
+  servings: number;
+  icon: string;
+}
 
 interface Props {
   onProfile: () => void;
@@ -14,12 +22,16 @@ interface Props {
 
 export default function Dashboard({ onProfile }: Props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [addFoodVisible, setAddFoodVisible] = useState(false);
+  const [foodFormVisible, setFoodFormVisible] = useState(false);
   const [calendarVisible, setCalendarVisible] = useState(false);
+  const [editingFood, setEditingFood] = useState<FoodItem | null>(null);
 
-  const [foods, setFoods] = useState<Array<{ id: string; name: string; caloriesPerServing: number; servings: number; icon?: string }>>([]);
+  const [foods, setFoods] = useState<FoodItem[]>([]);
   const calorieGoal = 0;
-  const totalConsumed = foods.reduce((sum, food) => sum + food.caloriesPerServing * food.servings, 0);
+  const totalConsumed = foods.reduce(
+    (sum, food) => sum + food.caloriesPerServing * food.servings,
+    0
+  );
 
   const formatDate = (date: Date) => {
     const today = new Date();
@@ -32,6 +44,39 @@ export default function Dashboard({ onProfile }: Props) {
 
   const formatSubDate = (date: Date) =>
     date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  const openAddForm = () => {
+    setEditingFood(null);
+    setFoodFormVisible(true);
+  };
+
+  const openEditForm = (id: string) => {
+    const food = foods.find((f) => f.id === id);
+    if (food) {
+      setEditingFood(food);
+      setFoodFormVisible(true);
+    }
+  };
+
+  const handleSubmit = (food: Omit<FoodItem, 'id'>) => {
+    if (editingFood) {
+      setFoods((prev) =>
+        prev.map((f) => (f.id === editingFood.id ? { ...f, ...food } : f))
+      );
+    } else {
+      setFoods((prev) => [...prev, { ...food, id: String(Date.now()) }]);
+    }
+    closeForm();
+  };
+
+  const closeForm = () => {
+    setFoodFormVisible(false);
+    setEditingFood(null);
+  };
+
+  const handleDeleteFood = (id: string) => {
+    setFoods((prev) => prev.filter((f) => f.id !== id));
+  };
 
   return (
     <View style={styles.container}>
@@ -56,7 +101,7 @@ export default function Dashboard({ onProfile }: Props) {
           <Text style={styles.foodSectionTitle}>Today's Food</Text>
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() => setAddFoodVisible(true)}
+            onPress={openAddForm}
             activeOpacity={0.85}
           >
             <Ionicons name="add" size={22} color="#fff" />
@@ -71,12 +116,14 @@ export default function Dashboard({ onProfile }: Props) {
         ) : (
           <View style={styles.foodList}>
             {foods.map((food) => (
-              <FoodListItem
+              <SwipeableFoodItem
                 key={food.id}
                 name={food.name}
                 caloriesPerServing={food.caloriesPerServing}
                 servings={food.servings}
                 icon={food.icon}
+                onEdit={() => openEditForm(food.id)}
+                onDelete={() => handleDeleteFood(food.id)}
               />
             ))}
           </View>
@@ -84,17 +131,16 @@ export default function Dashboard({ onProfile }: Props) {
       </ScrollView>
 
       <Modal
-        visible={addFoodVisible}
+        visible={foodFormVisible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setAddFoodVisible(false)}
+        onRequestClose={closeForm}
       >
         <AddFood
-          onBack={() => setAddFoodVisible(false)}
-          onAddFood={(food) => {
-            setFoods((prev) => [...prev, { ...food, id: String(Date.now()) }]);
-            setAddFoodVisible(false);
-          }}
+          key={editingFood?.id ?? 'new'}
+          initialFood={editingFood ?? undefined}
+          onBack={closeForm}
+          onSubmit={handleSubmit}
         />
       </Modal>
 

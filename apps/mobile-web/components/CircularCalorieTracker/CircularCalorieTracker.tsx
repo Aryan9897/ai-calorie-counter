@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, Easing, View, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import {
@@ -9,7 +10,12 @@ import {
   styles,
 } from './CircularCalorieTracker.styles';
 
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const CENTER = SIZE / 2;
+
+const TRACK_COLOR = '#DCFCE7';
+const PROGRESS_COLOR = '#22C55E';
+const OVER_COLOR = '#EF4444';
 
 interface Props {
   consumed: number;
@@ -17,67 +23,66 @@ interface Props {
 }
 
 export default function CircularCalorieTracker({ consumed, goal }: Props) {
-  const isOverGoal = consumed > goal;
+  const safeGoal = goal > 0 ? goal : 1;
+  const isOverGoal = consumed > goal && goal > 0;
   const remaining = goal - consumed;
 
-  const progressPercent = Math.min((consumed / goal) * 100, 100);
-  const progressOffset = CIRCUMFERENCE - (progressPercent / 100) * CIRCUMFERENCE;
+  const fraction = Math.min(consumed / safeGoal, 1);
+  const targetOffset = CIRCUMFERENCE - fraction * CIRCUMFERENCE;
 
-  const overflowPercent = Math.min(Math.max(0, ((consumed - goal) / goal) * 100), 100);
-  const overflowOffset = CIRCUMFERENCE - (overflowPercent / 100) * CIRCUMFERENCE;
+  const animatedOffset = useRef(new Animated.Value(CIRCUMFERENCE)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedOffset, {
+      toValue: targetOffset,
+      duration: 1000,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  }, [targetOffset, animatedOffset]);
 
   return (
     <View style={styles.container}>
       <View style={styles.svgWrapper}>
         <Svg width={SIZE} height={SIZE}>
-          {/* Track */}
+          {/* Track — faded, represents remaining */}
           <Circle
             cx={CENTER}
             cy={CENTER}
             r={RADIUS}
             fill="none"
-            stroke="#f3f4f6"
+            stroke={isOverGoal ? '#FEE2E2' : TRACK_COLOR}
             strokeWidth={STROKE_WIDTH}
           />
-          {/* Progress */}
-          <Circle
+          {/* Progress — vivid, animates in on mount and on change */}
+          <AnimatedCircle
             cx={CENTER}
             cy={CENTER}
             r={RADIUS}
             fill="none"
-            stroke="#10b981"
+            stroke={isOverGoal ? OVER_COLOR : PROGRESS_COLOR}
             strokeWidth={STROKE_WIDTH}
             strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
-            strokeDashoffset={progressOffset}
+            strokeDashoffset={animatedOffset}
             strokeLinecap="round"
             rotation="-90"
             origin={`${CENTER}, ${CENTER}`}
           />
-          {/* Overflow */}
-          {isOverGoal && (
-            <Circle
-              cx={CENTER}
-              cy={CENTER}
-              r={RADIUS}
-              fill="none"
-              stroke="#ef4444"
-              strokeWidth={STROKE_WIDTH}
-              strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
-              strokeDashoffset={overflowOffset}
-              strokeLinecap="round"
-              rotation="-90"
-              origin={`${CENTER}, ${CENTER}`}
-            />
-          )}
         </Svg>
 
         <View style={styles.centerContent}>
           <Text style={[styles.consumed, isOverGoal && styles.consumedOver]}>
             {consumed}
           </Text>
-          <Text style={styles.goalLabel}>of {goal} cal</Text>
+          <Text style={styles.goalLabel}>
+            {goal === 0 ? 'no goal set' : `of ${goal} cal`}
+          </Text>
           <Text style={[styles.remainingLabel, isOverGoal && styles.remainingLabelOver]}>
-            {isOverGoal ? `${Math.abs(remaining)} over goal` : `${remaining} remaining`}
+            {goal === 0
+              ? 'set a goal in profile'
+              : isOverGoal
+              ? `${Math.abs(remaining)} over goal`
+              : `${remaining} remaining`}
           </Text>
         </View>
       </View>

@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-export const SIZE = 208;
-export const RADIUS = 80;
-export const STROKE_WIDTH = 16;
+export const SIZE = 220;
+export const RADIUS = 82;
+export const STROKE_WIDTH = 22;
 export const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export const styles = StyleSheet.create({
@@ -25,12 +25,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   consumed: {
-    fontSize: 36,
-    fontWeight: '600',
+    fontSize: 40,
+    fontWeight: '700',
     color: '#111827',
+    letterSpacing: -1,
   },
   consumedOver: {
-    color: '#dc2626',
+    color: '#DC2626',
   },
   goalLabel: {
     fontSize: 13,
@@ -43,6 +44,6 @@ export const styles = StyleSheet.create({
     marginTop: 6,
   },
   remainingLabelOver: {
-    color: '#ef4444',
+    color: '#EF4444',
   },
 });
