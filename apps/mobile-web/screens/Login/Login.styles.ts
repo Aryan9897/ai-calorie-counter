@@ -110,4 +110,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  loginButtonDisabled: {
+    opacity: 0.6,
+  },
+  error: {
+    color: '#DC2626',
+    fontSize: 14,
+  },
 });

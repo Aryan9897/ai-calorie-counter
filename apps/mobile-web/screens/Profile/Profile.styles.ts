@@ -8,6 +8,11 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   backButton: {
     margin: 16,
     width: 40,
@@ -37,18 +42,17 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   nameInput: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '600',
     color: '#111827',
     textAlign: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    minWidth: 120,
-  },
-  nameInputFocused: {
-    borderBottomColor: '#22c55e',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#ffffff',
+    minWidth: 200,
   },
 
   // Cards
@@ -63,95 +67,162 @@ export const styles = StyleSheet.create({
     color: '#6B7280',
     marginBottom: 8,
   },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+
+  // Compact input
+  compactInput: {
+    fontSize: 16,
+    fontWeight: '500',
     color: '#111827',
-    marginBottom: 16,
-  },
-  cardInput: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#111827',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-    paddingVertical: 4,
-  },
-  cardInputFocused: {
-    borderBottomColor: '#22c55e',
-  },
-  calorieRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 8,
-  },
-  calorieInput: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#111827',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-    paddingVertical: 4,
-  },
-  calorieSuffix: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#111827',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: '#ffffff',
+    width: 100,
   },
 
-  // Activity level picker
+  // Calorie row
+  calorieRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  calorieSuffix: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+
+  // Activity level trigger
   activityValue: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: '#ffffff',
   },
   activityValueText: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '500',
     color: '#111827',
   },
-  activityOption: {
-    paddingVertical: 10,
-    paddingHorizontal: 4,
+  activityPlaceholder: {
+    color: '#9CA3AF',
+    fontWeight: '400',
+  },
+
+  // Height row: [input] ft [input] in
+  heightRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  heightInput: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: '#ffffff',
+    width: 56,
+    textAlign: 'center',
+  },
+  unitLabel: {
+    fontSize: 13,
+    color: '#6B7280',
+  },
+
+  // Weight row
+  weightRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  unitToggle: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
+  unitToggleOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#ffffff',
+  },
+  unitToggleSelected: {
+    backgroundColor: '#22c55e',
+  },
+  unitToggleText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  unitToggleTextSelected: {
+    color: '#ffffff',
+  },
+
+  // Activity level modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  modalSheet: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    width: '100%',
+    overflow: 'hidden',
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: '#F3F4F6',
   },
-  activityOptionSelected: {
-    borderBottomColor: 'transparent',
-  },
-  activityOptionText: {
+  modalOptionText: {
     fontSize: 16,
     color: '#374151',
   },
-  activityOptionTextSelected: {
+  modalOptionTextSelected: {
     color: '#22c55e',
     fontWeight: '600',
   },
 
-  // Physical stats grid
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 16,
+  // Error
+  error: {
+    color: '#DC2626',
+    fontSize: 14,
+    marginBottom: 12,
   },
-  statField: {
-    flex: 1,
+
+  // Save
+  saveButton: {
+    backgroundColor: '#22c55e',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 12,
   },
-  statLabel: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginBottom: 8,
+  saveButtonDisabled: {
+    opacity: 0.6,
   },
-  statInput: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#111827',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-    paddingVertical: 4,
-  },
-  statInputFocused: {
-    borderBottomColor: '#22c55e',
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ffffff',
   },
 
   // Logout

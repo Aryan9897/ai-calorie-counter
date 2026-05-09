@@ -7,8 +7,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { signIn } from '@calorie/services';
 
 import { styles } from './Login.styles';
 
@@ -20,6 +22,25 @@ interface Props {
 export default function Login({ onLogin, onSignup }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleLogin() {
+    if (!email || !password) {
+      setError('Email and password are required.');
+      return;
+    }
+    setError(null);
+    setIsLoading(true);
+    try {
+      await signIn(email, password);
+      onLogin();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -66,8 +87,18 @@ export default function Login({ onLogin, onSignup }: Props) {
             />
           </View>
 
-          <TouchableOpacity style={styles.loginButton} onPress={onLogin} activeOpacity={0.85}>
-            <Text style={styles.loginButtonText}>Log In</Text>
+          {error && <Text style={styles.error}>{error}</Text>}
+
+          <TouchableOpacity
+            style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+            onPress={handleLogin}
+            activeOpacity={0.85}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? <ActivityIndicator color="#fff" />
+              : <Text style={styles.loginButtonText}>Log In</Text>
+            }
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.forgotPassword} activeOpacity={0.7}>

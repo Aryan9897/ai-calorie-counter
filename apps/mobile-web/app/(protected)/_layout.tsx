@@ -1,12 +1,20 @@
 import { Stack, Redirect } from 'expo-router';
+import { ActivityIndicator, View } from 'react-native';
 
-// TODO: replace with real auth state from Supabase once auth is wired up
-const useIsAuthenticated = () => true;
+import { useAuthStatus } from '@/components/useAuthStatus';
 
 export default function ProtectedLayout() {
-  const isAuthenticated = useIsAuthenticated();
+  const status = useAuthStatus();
 
-  if (!isAuthenticated) return <Redirect href="/" />;
+  if (status === 'loading') {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#22c55e" />
+      </View>
+    );
+  }
+
+  if (status === 'anon') return <Redirect href="/" />;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

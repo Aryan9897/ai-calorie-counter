@@ -77,4 +77,14 @@ export const styles = StyleSheet.create({
     color: '#9CA3AF',
     marginTop: 8,
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    fontSize: 13,
+    color: '#DC2626',
+    marginBottom: 12,
+  },
 });

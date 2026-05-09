@@ -1,20 +1,31 @@
-import { createClient } from "@supabase/supabase-js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform } from "react-native";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import type { SupportedStorage } from "@supabase/supabase-js";
 import type { Database } from "@calorie/types";
 
-const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const key = process.env.EXPO_PUBLIC_SUPABASE_KEY;
+declare const process: { env: Record<string, string | undefined> };
 
-if (!url || !key) {
-  throw new Error("EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_KEY must be set in .env.local");
+let _client: SupabaseClient<Database> | null = null;
+
+export function initSupabase(storage?: SupportedStorage) {
+  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const key = process.env.EXPO_PUBLIC_SUPABASE_KEY;
+  if (!url || !key) {
+    throw new Error(
+      "EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_KEY must be set in .env.local"
+    );
+  }
+  _client = createClient<Database>(url, key, {
+    auth: {
+      storage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  });
+  return _client;
 }
 
-export const supabase = createClient<Database>(url, key, {
-  auth: {
-    storage: Platform.OS === "web" ? undefined : AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: Platform.OS === "web",
-  },
-});
+export function getSupabase(): SupabaseClient<Database> {
+  if (!_client) throw new Error("Call initSupabase() before using any service");
+  return _client;
+}

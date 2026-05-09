@@ -7,8 +7,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { signUp, createProfile, signOut } from '@calorie/services';
 
 import { styles } from './Signup.styles';
 
@@ -23,6 +25,43 @@ export default function Signup({ onSignup, onBack }: Props) {
   const [password, setPassword] = useState('');
   const [age, setAge] = useState('');
   const [calorieGoal, setCalorieGoal] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSignup() {
+    if (!name || !email || !password || !age || !calorieGoal) {
+      setError('All fields are required.');
+      return;
+    }
+    const parsedAge = parseInt(age, 10);
+    const parsedGoal = parseInt(calorieGoal, 10);
+    if (isNaN(parsedAge) || isNaN(parsedGoal)) {
+      setError('Age and calorie goal must be valid numbers.');
+      return;
+    }
+    setError(null);
+    setIsLoading(true);
+    try {
+      const { user } = await signUp(email, password);
+      if (!user) throw new Error('Sign up succeeded but no user was returned.');
+      try {
+        await createProfile({
+          user_id: user.id,
+          display_name: name,
+          age: parsedAge,
+          daily_calorie_goal: parsedGoal,
+        });
+      } catch (profileErr) {
+        await signOut().catch(() => {});
+        throw profileErr;
+      }
+      onSignup();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Sign up failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -111,8 +150,18 @@ export default function Signup({ onSignup, onBack }: Props) {
             <Text style={styles.hint}>You can adjust this later in your profile</Text>
           </View>
 
-          <TouchableOpacity style={styles.signupButton} onPress={onSignup} activeOpacity={0.85}>
-            <Text style={styles.signupButtonText}>Create Account</Text>
+          {error && <Text style={styles.error}>{error}</Text>}
+
+          <TouchableOpacity
+            style={[styles.signupButton, isLoading && styles.signupButtonDisabled]}
+            onPress={handleSignup}
+            activeOpacity={0.85}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? <ActivityIndicator color="#fff" />
+              : <Text style={styles.signupButtonText}>Create Account</Text>
+            }
           </TouchableOpacity>
         </View>
 

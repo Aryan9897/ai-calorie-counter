@@ -82,6 +82,13 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  signupButtonDisabled: {
+    opacity: 0.6,
+  },
+  error: {
+    color: '#DC2626',
+    fontSize: 14,
+  },
   terms: {
     fontSize: 12,
     color: '#6B7280',
