@@ -69,4 +69,14 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#111827',
   },
+  webRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  webActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
 });

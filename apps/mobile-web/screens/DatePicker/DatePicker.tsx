@@ -149,17 +149,6 @@ export default function DatePicker({ selectedDate, onSelectDate, onClose }: Prop
           >
             <Text style={styles.quickSelectText}>Today</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.quickSelectButton}
-            onPress={() => {
-              const yesterday = new Date();
-              yesterday.setDate(yesterday.getDate() - 1);
-              handleQuickSelect(yesterday);
-            }}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.quickSelectText}>Yesterday</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

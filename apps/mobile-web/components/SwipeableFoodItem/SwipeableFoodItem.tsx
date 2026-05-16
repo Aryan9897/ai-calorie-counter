@@ -49,21 +49,55 @@ export default function SwipeableFoodItem({
     })
   ).current;
 
-  return (
-    <View style={styles.wrapper}>
-      {/* Background action hints — PanResponder only fires on native, not web */}
-      {Platform.OS !== 'web' && (
-        <View style={styles.actions}>
-          <View style={styles.editAction}>
-            <Ionicons name="pencil" size={16} color="#2563EB" />
-            <Text style={styles.editActionText}>Edit</Text>
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.wrapper}>
+        <View style={styles.item}>
+          <View style={styles.left}>
+            <Text style={styles.itemIcon}>{icon}</Text>
+            <View>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.meta}>
+                {caloriesPerServing} cal × {servings}{' '}
+                {servings === 1 ? 'serving' : 'servings'}
+              </Text>
+            </View>
           </View>
-          <View style={styles.deleteAction}>
-            <Text style={styles.deleteActionText}>Delete</Text>
-            <Ionicons name="trash-outline" size={16} color="#DC2626" />
+          <View style={styles.webRight}>
+            <Text style={styles.totalCalories}>{totalCalories}</Text>
+            <View style={styles.webActions}>
+              <Ionicons
+                name="pencil"
+                size={16}
+                color="#2563EB"
+                onPress={onEdit}
+              />
+              <Ionicons
+                name="trash-outline"
+                size={16}
+                color="#DC2626"
+                onPress={onDelete}
+              />
+            </View>
           </View>
         </View>
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.wrapper}>
+      {/* Background action hints */}
+      <View style={styles.actions}>
+        <View style={styles.editAction}>
+          <Ionicons name="pencil" size={16} color="#2563EB" />
+          <Text style={styles.editActionText}>Edit</Text>
+        </View>
+        <View style={styles.deleteAction}>
+          <Text style={styles.deleteActionText}>Delete</Text>
+          <Ionicons name="trash-outline" size={16} color="#DC2626" />
+        </View>
+      </View>
 
       {/* Sliding foreground */}
       <Animated.View
